@@ -1,0 +1,29 @@
+{
+  "name": "photo-sharing-backend",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "connect-session-sequelize": "^7.1.7",
+    "connect-sqlite3": "^0.9.15",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "fs": "^0.0.1-security",
+    "http-errors": "^2.0.0",
+    "mkdirp": "^3.0.1",
+    "morgan": "^1.10.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pluralize": "^8.0.0",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "debug": "^4.3.6"
+  },
+  "type": "module"
+}

@@ -1,0 +1,44 @@
+{
+  "name": "photo-share-service",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A service for easily sharing photos.",
+  "keywords": [
+    "photo",
+    "upload",
+    "share"
+  ],
+  "author": {
+    "name": "Andy Moesch",
+    "email": "andy@wry.ch",
+    "url": "https://www.wry.ch/"
+  },
+  "homepage": "https://www.wry.ch",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrych/photo_upload_service"
+  },
+  "bugs": {
+    "url": "https://github.com/wrych/photo_upload_service/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wrych"
+  },
+  "main": "backend/app.js",
+  "scripts": {
+    "frontend-dev": "npm run dev --prefix frontend",
+    "start": "npm run start --prefix backend",
+    "build": "npm run build --prefix frontend",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path backend/.gitignore --ignore-path frontend/.gitignore",
+    "format": "prettier --write backend/ frontend/src"
+  },
+  "license": "Unlicense",
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.8.0",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.23.0",
+    "prettier": "^3.2.5"
+  }
+}

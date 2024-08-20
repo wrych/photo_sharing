@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Photo Sharing</title>
+</head>
+
+<body>
+	<section>
+		<h1>Sign up</h1>
+		<form action="/auth/signup" method="post">
+			<section>
+				<label for="username">Username</label>
+				<input id="username" name="username" type="text" autocomplete="username" required>
+			</section>
+			<section>
+				<label for="new-password">Password</label>
+				<input id="new-password" name="password" type="password" autocomplete="new-password" required>
+			</section>
+			<button type="submit">Sign up</button>
+		</form>
+		<hr>
+		<p>Already have an account? <a href="/auth/login">Sign in</a></p>
+	</section>
+	<footer>
+		<p>Created by <a href="https://www.wry.ch">Andy</a></p>
+	</footer>
+</body>
+
+</html>

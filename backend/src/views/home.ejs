@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Photo Sharing</title>
+</head>
+
+<body>
+	<header>
+		<% if (user) { %>
+			<h1>Welcome, <%= user.username %>!</h1>
+			<a href="/auth/logout">Logout</a>
+		<% } else { %>
+			<h1>Welcome, Guest!</h1>
+			<p><a href="/auth/login">log in</a> or <a href="/auth/signup/">sign up</a></p>
+		<% } %>
+	</header>
+	<footer class="info">
+		<p>Created by <a href="https://www.wry.ch">Andy</a></p>
+	</footer>
+</body>
+
+</html>
