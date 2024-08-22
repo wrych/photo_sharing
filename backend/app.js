@@ -12,7 +12,7 @@ import connectSessionSequelize from 'connect-session-sequelize'
 import { fileURLToPath } from 'url'
 import crypto from 'crypto'
 
-import apiRouter from './src/routes/api.js'
+import apiRouter from './src/routes/api/api.js'
 import authRouter from './src/routes/auth.js'
 import ORM from './src/data/ORM.js'
 import User from './src/models/User.js'
