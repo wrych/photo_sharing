@@ -12,6 +12,7 @@ const fetchAuthorisationState = async (): Promise<AuthentificationState> => {
 
 const fetchAuthorisatedUser = async (): Promise<User> => {
   const response = await axios.get('/api/auth/user')
+  // if (!response.headers['content-type'].startsWith('application/json')) {
   if (!response.headers['content-type'].startsWith('application/json')) {
     throw new BadResponseFormatError()
   }
@@ -33,11 +34,13 @@ const login = async (
   }
 }
 
-const logout = async () => {
+const logout = async (): Promise<Boolean | Error> => {
   try {
-    await axios.post('/api/auth/logout')
-    errorMessage.value = ''
+    const res = await axios.post('/api/auth/logout')
+    return res.status === 200 ? true : false
   } catch (err: any) {
-    errorMessage.value = 'Failed to log-in: ' + err.message
+    throw Error(`Log out failed with error ${err}.`)
   }
 }
+
+export { fetchAuthorisationState, fetchAuthorisatedUser, login, logout }

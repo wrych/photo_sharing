@@ -44,7 +44,7 @@ passport.use(
             return cb(null, user)
           }
         )
-      } catch (err) {
+      } catch (err: any) {
         return cb(err)
       }
     }

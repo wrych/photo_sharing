@@ -2,23 +2,16 @@
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 
-class BadResponseFormatError extends Error {
-  constructor() {
-    super('Malformed response')
-  }
-}
-
-interface User {
-  username: string
-  id: number
-}
-
-interface AuthentificationState {
-  value?: string
-}
+import { AuthentificationState, User } from '@/models/userModels'
+import {
+  fetchAuthorisatedUser,
+  fetchAuthorisationState,
+  login as apiLogin,
+  logout as apiLogout
+} from '@/api/userService'
 
 const errorMessage = ref('')
-const authState = ref<string | undefined>(undefined)
+const authState = ref<AuthentificationState | undefined>(undefined)
 const user = ref<User | null>(null)
 const loginForm = ref({
   password: '',
@@ -26,58 +19,21 @@ const loginForm = ref({
 })
 
 onMounted(async () => {
-  fetchAuthorisationState()
-  setInterval(() => {
-    fetchAuthorisationState()
-    if (authState.value === 'authorised') {
-      fetchAuthorisatedUser()
+  authState.value = await fetchAuthorisationState()
+  setInterval(async () => {
+    authState.value = await fetchAuthorisationState()
+    if (authState.value.value === 'authorised') {
+      user.value = await fetchAuthorisatedUser()
     }
   }, 2000)
 })
 
-const fetchAuthorisationState = async () => {
-  try {
-    const response = await axios.get<AuthentificationState>('/api/auth/state')
-    if (!response.headers['content-type'].startsWith('application/json')) {
-      throw new BadResponseFormatError()
-    }
-    authState.value = response.data.value
-  } catch (err: any) {
-    errorMessage.value = 'Failed to fetch authorisation state: ' + err.message
-  }
-}
-
-const fetchAuthorisatedUser = async () => {
-  try {
-    const response = await axios.get('/api/auth/user')
-    if (!response.headers['content-type'].startsWith('application/json')) {
-      throw new BadResponseFormatError()
-    }
-    user.value = response.data.value
-  } catch (err: any) {
-    errorMessage.value = 'Failed to fetch user: ' + err.message
-  }
-}
-
 const login = async () => {
-  try {
-    await axios.post('/api/auth/login/password', {
-      username: loginForm.value.username,
-      password: loginForm.value.password
-    })
-    errorMessage.value = ''
-  } catch (err: any) {
-    errorMessage.value = 'Failed to log-in: ' + err.message
-  }
+  await apiLogin(loginForm.value.username, loginForm.value.password)
 }
 
 const logout = async () => {
-  try {
-    await axios.post('/api/auth/logout')
-    errorMessage.value = ''
-  } catch (err: any) {
-    errorMessage.value = 'Failed to log-in: ' + err.message
-  }
+  await apiLogout()
 }
 </script>
 
@@ -86,8 +42,8 @@ const logout = async () => {
     <h1>API Auth State</h1>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     <div v-else-if="authState">
-      Authorisation State: {{ authState }}
-      <div v-if="authState === 'authorised' && user">
+      Authorisation State: {{ authState.value }}
+      <div v-if="authState.value === 'authorised' && user">
         Hello {{ user.username }}!
         <form @submit.prevent="logout">
           <button type="submit">logout</button>
