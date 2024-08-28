@@ -15,11 +15,10 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/apitest',
-      name: 'apitest',
-      component: () => import('../views/ApiView.vue')
-    },
-    { path: '/api' }
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/UserView.vue')
+    }
   ]
 })
 

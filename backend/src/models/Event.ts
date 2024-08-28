@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize'
-import ORM from '.../data/ORM.js'
+import ORM from '../data/ORM.js'
 import User from './User.js'
+import EventState from './EventState.js'
 
 const Event = ORM.define('Event', {
   id: {
@@ -20,9 +21,13 @@ const Event = ORM.define('Event', {
     type: DataTypes.TEXT,
     allowNull: false
   },
-  completed: {
+  event_state: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    allowNull: false,
+    references: {
+      model: EventState,
+      key: 'id'
+    }
   }
 })
 
