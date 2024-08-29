@@ -1,17 +1,9 @@
-import argon2 from 'argon2'
-import crypto from 'crypto'
-
 import ORM from './data/ORM.js'
-import User from './models/User.js'
 import Migration, { MigrationSteps } from './models/Migrations.js'
 import { setupEventStates } from './models/EventState.js'
+import { registerUser } from './services/user.js'
 
-async function bootStrap() {
-  await syncDatabase()
-  await setupAlice()
-}
-
-async function syncDatabase() {
+const syncDatabase = async () => {
   console.log('Syncing database...')
   try {
     await ORM.sync({ alter: true })
@@ -29,18 +21,7 @@ const markMigrationComplete = async (): Promise<void> => {
 
 const setupAlice = async (): Promise<void> => {
   try {
-    const salt = crypto.randomBytes(16)
-    const hashedPassword = await argon2.hash('letmein', { salt, raw: true })
-
-    await User.findOrCreate({
-      where: { username: 'alice' },
-      defaults: {
-        username: 'alice',
-        hashed_password: hashedPassword,
-        salt: salt
-      }
-    })
-
+    registerUser('alice', 'letmein')
     console.log('User Alice has been set up.')
   } catch (error) {
     console.error('Error setting up user Alice:', error)

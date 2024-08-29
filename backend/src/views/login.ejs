@@ -1,32 +1,45 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" />
+    <title>Photo Sharing</title>
+  </head>
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="/favicon.svg">
-	<title>Photo Sharing</title>
-</head>
-
-<body>
-	<section>
-		<h1>Sign in</h1>
-		<form action="/auth/login/password?successRedirect=https://wry.ch" method="post">
-			<section>
-				<label for="username">Username</label>
-				<input id="username" name="username" type="text" autocomplete="username" required autofocus>
-			</section>
-			<section>
-				<label for="current-password">Password</label>
-				<input id="current-password" name="password" type="password" autocomplete="current-password" required>
-			</section>
-			<button type="submit">Sign in</button>
-		</form>
-		<p class="help">Don't have an account? <a href="/auth/signup">Sign up</a></p>
-	</section>
-	<footer>
-		<p>Created by <a href="https://www.wry.ch">Andy</a></p>
-	</footer>
-</body>
-
+  <body>
+    <section>
+      <h1>Sign in</h1>
+      <form action="/auth/login/password" method="post">
+        <section>
+          <label for="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            required
+            autofocus
+          />
+        </section>
+        <section>
+          <label for="current-password">Password</label>
+          <input
+            id="current-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+        </section>
+        <button type="submit">Sign in</button>
+      </form>
+      <p class="help">
+        Don't have an account? <a href="/auth/signup">Sign up</a>
+      </p>
+    </section>
+    <footer>
+      <p>Created by <a href="https://www.wry.ch">Andy</a></p>
+    </footer>
+  </body>
 </html>

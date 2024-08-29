@@ -1,8 +1,9 @@
 import express from 'express'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-import crypto from 'crypto'
 import User from '../models/User.js'
+import { verifyUserAndPassword } from '../services/auth.js'
+import { registerUser } from '../services/user.js'
 
 passport.use(
   new Strategy(
@@ -15,35 +16,9 @@ passport.use(
         info?: { message: string }
       ) => void
     ) => {
+      console.log('verifying user...')
       try {
-        const user: User | null = await User.findOne({
-          where: { username: username }
-        })
-
-        if (!user) {
-          return cb(null, false, { message: 'Incorrect username or password.' })
-        }
-
-        crypto.pbkdf2(
-          password,
-          user.salt,
-          310000,
-          32,
-          'sha256',
-          function (err, hashedPassword) {
-            if (err) {
-              return cb(err)
-            }
-
-            if (!crypto.timingSafeEqual(user.hashed_password, hashedPassword)) {
-              return cb(null, false, {
-                message: 'Incorrect username or password.'
-              })
-            }
-
-            return cb(null, user)
-          }
-        )
+        return await verifyUserAndPassword(username, password, cb)
       } catch (err: any) {
         return cb(err)
       }
@@ -109,39 +84,15 @@ router.get('/signup', function (req, res) {
   res.render('signup')
 })
 
-router.post('/signup', async function (req, res, next) {
+router.post('/signup', async (req, res, next) => {
   try {
-    const salt = crypto.randomBytes(16)
-
-    crypto.pbkdf2(
-      req.body.password,
-      salt,
-      310000,
-      32,
-      'sha256',
-      async function (err, hashedPassword) {
-        if (err) {
-          return next(err)
-        }
-
-        try {
-          const newUser = await User.create({
-            username: req.body.username,
-            hashed_password: hashedPassword,
-            salt: salt
-          })
-
-          req.login(newUser, function (err) {
-            if (err) {
-              return next(err)
-            }
-            return res.redirect('/auth')
-          })
-        } catch (err) {
-          return next(err)
-        }
+    const newUser = await registerUser(req.body.username, req.body.password)
+    req.login(newUser, (err) => {
+      if (err) {
+        return next(err)
       }
-    )
+      return res.redirect('/auth')
+    })
   } catch (err) {
     return next(err)
   }

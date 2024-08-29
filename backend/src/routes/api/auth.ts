@@ -21,7 +21,7 @@ authRouter.get('/state', (req: Request, res: Response) => {
 })
 
 authRouter.get('/user', ensureAuthenticated, (req: Request, res: Response) => {
-  res.status(200).json({ value: req.user })
+  res.status(200).json({ user: req.user })
 })
 
 authRouter.post(

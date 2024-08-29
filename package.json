@@ -26,7 +26,7 @@
     "url": "https://github.com/sponsors/wrych"
   },
   "scripts": {
-    "dev": "concurrently \"run dev --prefix backend\" \"run dev --prefix frontend\"",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "build": "npm run build --prefix backend && npm run build --prefix frontend",
     "lint": "eslint . --fix --ignore-path backend/.gitignore --ignore-path frontend/.gitignore",
     "format": "prettier --write backend/ frontend/src"

@@ -4,8 +4,7 @@ import ORM from '../data/ORM.js'
 interface UserAttributes {
   id?: number
   username: string
-  hashed_password: Buffer
-  salt: Buffer
+  hashedPassword: string
   name?: string
   email?: string
   emailVerified?: number
@@ -14,8 +13,7 @@ interface UserAttributes {
 class User extends Model<UserAttributes> implements UserAttributes {
   declare id: number
   declare username: string
-  declare hashed_password: Buffer
-  declare salt: Buffer
+  declare hashedPassword: string
   declare name: string
   declare email: string
   declare emailVerified: number
@@ -33,12 +31,8 @@ User.init(
       unique: true,
       allowNull: false
     },
-    hashed_password: {
-      type: DataTypes.BLOB,
-      allowNull: false
-    },
-    salt: {
-      type: DataTypes.BLOB,
+    hashedPassword: {
+      type: DataTypes.TEXT,
       allowNull: false
     },
     name: {

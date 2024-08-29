@@ -4,6 +4,9 @@ import { BadResponseFormatError } from './common'
 
 const fetchAuthorisationState = async (): Promise<AuthentificationState> => {
   const response = await axios.get<AuthentificationState>('/api/auth/state')
+  console.log(response.status)
+  console.log(response.headers)
+  console.log(response.data)
   if (!response.headers['content-type'].startsWith('application/json')) {
     throw new BadResponseFormatError()
   }
@@ -12,7 +15,6 @@ const fetchAuthorisationState = async (): Promise<AuthentificationState> => {
 
 const fetchAuthorisatedUser = async (): Promise<User> => {
   const response = await axios.get('/api/auth/user')
-  // if (!response.headers['content-type'].startsWith('application/json')) {
   if (!response.headers['content-type'].startsWith('application/json')) {
     throw new BadResponseFormatError()
   }
