@@ -17,11 +17,13 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 }
 
 authRouter.get('/state', (req: Request, res: Response) => {
-  res.status(200).json({ value: req.user ? 'authorised' : 'unauthorised' })
+  res
+    .status(200)
+    .json({ value: req.isAuthenticated() ? 'authorised' : 'unauthorised' })
 })
 
 authRouter.get('/user', ensureAuthenticated, (req: Request, res: Response) => {
-  res.status(200).json({ user: req.user })
+  res.status(200).json({ value: req.user })
 })
 
 authRouter.post(

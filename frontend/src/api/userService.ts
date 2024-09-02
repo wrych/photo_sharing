@@ -1,24 +1,13 @@
-import { AuthentificationState, User } from '@/models/userModels'
+import { AuthentificationState, User } from '../models/UserModel.js'
 import axios from 'axios'
-import { BadResponseFormatError } from './common'
+import { fetchJson } from './common'
 
 const fetchAuthorisationState = async (): Promise<AuthentificationState> => {
-  const response = await axios.get<AuthentificationState>('/api/auth/state')
-  console.log(response.status)
-  console.log(response.headers)
-  console.log(response.data)
-  if (!response.headers['content-type'].startsWith('application/json')) {
-    throw new BadResponseFormatError()
-  }
-  return AuthentificationState.fromJSON(response.data)
+  return AuthentificationState.fromJSON(await fetchJson('/api/auth/state'))
 }
 
 const fetchAuthorisatedUser = async (): Promise<User> => {
-  const response = await axios.get('/api/auth/user')
-  if (!response.headers['content-type'].startsWith('application/json')) {
-    throw new BadResponseFormatError()
-  }
-  return User.fromJSON(response.data)
+  return User.fromJSON(await fetchJson('/api/auth/user'))
 }
 
 const login = async (

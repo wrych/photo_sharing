@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import axios from 'axios'
 import { ref, onMounted } from 'vue'
 
 import { AuthentificationState, User } from '@/models/userModels'
@@ -44,7 +43,7 @@ const logout = async () => {
     <div v-else-if="authState">
       Authorisation State: {{ authState.value }}
       <div v-if="authState.value === 'authorised' && user">
-        Hello {{ user.username }}!
+        Hello {{ user.value.username }}!
         <form @submit.prevent="logout">
           <button type="submit">logout</button>
         </form>

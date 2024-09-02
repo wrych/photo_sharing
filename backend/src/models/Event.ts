@@ -27,7 +27,8 @@ const Event = ORM.define('Event', {
     references: {
       model: EventState,
       key: 'id'
-    }
+    },
+    defaultValue: 1
   }
 })
 

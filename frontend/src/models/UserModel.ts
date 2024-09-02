@@ -7,8 +7,8 @@ export class User {
     this.id = id
   }
 
-  static fromJSON(json: { user: { id: number; username: string } }) {
-    return new User(json.user.id, json.user.username)
+  static fromJSON(json: { value: { id: number; username: string } }) {
+    return new User(json.value.id, json.value.username)
   }
 }
 
