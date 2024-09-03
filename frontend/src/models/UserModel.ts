@@ -11,15 +11,3 @@ export class User {
     return new User(json.value.id, json.value.username)
   }
 }
-
-export class AuthentificationState {
-  value: string
-
-  constructor(value: string) {
-    this.value = value
-  }
-
-  static fromJSON(json: { value: string }) {
-    return new AuthentificationState(json.value)
-  }
-}

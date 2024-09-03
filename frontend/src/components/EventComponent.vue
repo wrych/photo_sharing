@@ -2,7 +2,11 @@
 import { ref, onMounted } from 'vue'
 
 import type { EventStates, Events } from '@/models/EventModel'
-import { createEvent, fetchEventStates, fetchEvents } from '@/api/eventService'
+import {
+  createEvent,
+  fetchEventStates,
+  fetchEvents
+} from '@/services/eventService'
 
 const eventStates = ref<EventStates | undefined>(undefined)
 const events = ref<Events | undefined>(undefined)

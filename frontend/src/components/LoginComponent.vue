@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+
+import { login as apiLogin } from '@/services/userService'
 
 const loginForm = ref({
   password: '',
   username: ''
 })
+const processing = ref<boolean>(false)
 
 const login = async () => {
-  try {
-    await axios.post('/api/auth/login/password', {
-      username: loginForm.value.username,
-      password: loginForm.value.password
-    })
-    //todo: clear message
-  } catch (err: any) {
-    //todo: post message
-  }
+  processing.value = true
+  const success = await apiLogin(
+    loginForm.value.username,
+    loginForm.value.password
+  )
+  processing.value = false
+  console.log(success)
 }
 </script>
 
@@ -32,6 +32,7 @@ const login = async () => {
         type="text"
         autocomplete="username"
         placeholder="Username"
+        :disabled="processing"
         required
         autofocus
       />
@@ -42,16 +43,13 @@ const login = async () => {
         name="password"
         type="password"
         autocomplete="current-password"
-        placeholder="*****"
+        placeholder="Password"
+        :disabled="processing"
         required
       />
-      <button type="submit">Sign in</button>
+      <button type="submit" :disabled="processing">Sign in</button>
     </form>
   </div>
 </template>
 
-<style scoped>
-.error {
-  color: red;
-}
-</style>
+<style scoped></style>
