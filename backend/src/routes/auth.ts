@@ -66,8 +66,8 @@ router.get('/login', function (req, res) {
 router.post(
   '/login/password',
   passport.authenticate('local', {
-    successRedirect: '/auth/',
-    failureRedirect: '/auth/login'
+    successRedirect: '/_auth',
+    failureRedirect: '/_auth/login'
   })
 )
 
@@ -76,7 +76,7 @@ router.post('/logout', function (req, res, next) {
     if (err) {
       return next(err)
     }
-    res.redirect('/auth/')
+    res.redirect('/_auth')
   })
 })
 
@@ -91,7 +91,7 @@ router.post('/signup', async (req, res, next) => {
       if (err) {
         return next(err)
       }
-      return res.redirect('/auth')
+      return res.redirect('/_auth')
     })
   } catch (err) {
     return next(err)

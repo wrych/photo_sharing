@@ -44,7 +44,7 @@ app.use(
 app.use(passport.authenticate('session'))
 
 app.use('/api', apiRouter)
-app.use('/auth', authRouter)
+app.use('/_auth', authRouter)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404))

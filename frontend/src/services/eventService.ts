@@ -1,16 +1,18 @@
-import { EventStates, Events } from '../models/EventModel'
-import { fetchJson, postJson } from './common'
+import type { Event } from '@/models/EventModel'
 
-const fetchEventStates = async (): Promise<EventStates> => {
-  return EventStates.fromJSON(await fetchJson('/api/event/states'))
+class EventService {
+  private repository = useEventRepository()
+
+  getEvent = (id: number): Event | null => {
+    return this.repository.getUser()
+  }
 }
 
-const fetchEvents = async (): Promise<Events> => {
-  return Events.fromJSON(await fetchJson('/api/event/'))
-}
+let eventService: EventService | null = null
 
-const createEvent = async (title: string): Promise<Boolean> => {
-  return await postJson('/api/event/new', { title: title })
+export const useAuthService = (): EventService => {
+  if (!eventService) {
+    eventService = new EventService()
+  }
+  return eventService
 }
-
-export { fetchEventStates, fetchEvents, createEvent }

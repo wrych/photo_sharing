@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { login as apiLogin } from '@/services/userService'
-import { useUserStore } from '@/stores/userStore'
+import { useAuthService } from '@/services/authService.js'
 
-const userStore = useUserStore()
+const authService = useAuthService()
+
+const authUser = authService.getUser()
+const isProcessing = authService.getProcessing()
 
 const loginForm = ref({
   password: '',
@@ -12,23 +14,20 @@ const loginForm = ref({
 })
 
 const login = async () => {
-  const success = await apiLogin(
-    loginForm.value.username,
-    loginForm.value.password
-  )
+  await authService.login(loginForm.value.username, loginForm.value.password)
 }
 </script>
 
 <template>
   <div>
     <h1>Log In</h1>
-    <div v-if="userStore.user">
+    <div v-if="authUser">
       Welcome!
       <br />
-      You are logged in as {{ userStore.user.username }}!
+      You are logged in as {{ authUser.username }}!
     </div>
-    <div v-else-if="userStore.isProcessing">
-      Please be patient, currently processing a log in request!
+    <div v-else-if="isProcessing">
+      Please be patient, currently processing a request!
     </div>
     <div v-else>
       <form @submit.prevent="login">
@@ -40,7 +39,6 @@ const login = async () => {
           type="text"
           autocomplete="username"
           placeholder="Username"
-          :disabled="processing"
           required
           autofocus
         />
@@ -52,10 +50,9 @@ const login = async () => {
           type="password"
           autocomplete="current-password"
           placeholder="Password"
-          :disabled="processing"
           required
         />
-        <button type="submit" :disabled="processing">Sign in</button>
+        <button type="submit">Sign in</button>
       </form>
     </div>
   </div>

@@ -16,14 +16,8 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
   res.status(401).json({ message: 'Authorisation required.' }) // Unauthorized
 }
 
-authRouter.get('/state', (req: Request, res: Response) => {
-  res
-    .status(200)
-    .json({ value: req.isAuthenticated() ? 'authorised' : 'unauthorised' })
-})
-
-authRouter.get('/user', ensureAuthenticated, (req: Request, res: Response) => {
-  res.status(200).json({ value: req.user })
+authRouter.get('/user', (req: Request, res: Response) => {
+  res.status(200).json({ value: req.user ? req.user : null })
 })
 
 authRouter.post(

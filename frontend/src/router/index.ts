@@ -6,23 +6,33 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: HomeView
     },
     {
       path: '/about',
-      name: 'about',
+      name: 'About',
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/user',
-      name: 'user',
-      component: () => import('../views/UserView.vue')
+      path: '/auth',
+      name: 'Authentification',
+      component: () => import('../views/AuthView.vue')
     },
     {
-      path: '/event',
-      name: 'event',
+      path: '/events',
+      name: 'Event Overview',
+      component: () => import('../views/EventsView.vue')
+    },
+    {
+      path: '/event/:id',
+      name: 'Event Detail',
       component: () => import('../views/EventView.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue')
     }
   ]
 })

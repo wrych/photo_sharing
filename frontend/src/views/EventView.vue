@@ -1,10 +1,15 @@
-<script setup lang="ts">
-import EventComponent from '../components/EventComponent.vue'
-</script>
-
 <template>
-  <h1>This is an event page</h1>
-  <EventComponent />
+  <div>
+    <h2>Event Details for {{ event.id }}: {{ event.title }}</h2>
+  </div>
 </template>
 
-<style></style>
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { useEventService } from '@/stores/eventService'
+
+const route = useRoute()
+const eventService = useEventService()
+
+const event = eventService.getEvent(route.params.id)
+</script>
