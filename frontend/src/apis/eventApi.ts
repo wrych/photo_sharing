@@ -1,12 +1,11 @@
 import { Event, EventStates, Events } from '../models/EventModel'
 import { getJson, postJson, deleteJson } from './common'
-import { stateChanging } from '@/stores/common'
 
 const getEventStates = async (): Promise<EventStates> => {
   return EventStates.fromJSON(await getJson('/api/event/states'))
 }
 
-const getEvent = async (id: number): Promise<Event> => {
+const getEventById = async (id: number): Promise<Event> => {
   return Event.fromJSON(await getJson(`/api/event/${id}`))
 }
 
@@ -22,4 +21,4 @@ const deleteEvent = async (event: Event): Promise<{}> => {
   return await deleteJson(`/api/event/${event.id}`)
 }
 
-export { getEventStates, getEvents, getEvent, createEvent, deleteEvent }
+export { getEventStates, getEvents, getEventById, createEvent, deleteEvent }

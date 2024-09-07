@@ -1,30 +1,37 @@
 export class EventState {
+  id: number
   label: string
   rankOrder: number
 
-  constructor(label: string, rankOrder: number) {
+  constructor(id: number, label: string, rankOrder: number) {
+    this.id = id
     this.label = label
     this.rankOrder = rankOrder
   }
 
   static fromJSON(json: {
-    value: { label: string; orderRank: number }
+    value: { id: number; label: string; orderRank: number }
   }): EventState {
-    return new EventState(json.value.label, json.value.orderRank)
+    return new EventState(json.value.id, json.value.label, json.value.orderRank)
   }
 }
 
 export class EventStates {
-  eventStates: EventState[]
+  eventStates: Record<number, EventState>
 
-  constructor(eventStates: EventState[]) {
+  constructor(eventStates: Record<number, EventState>) {
     this.eventStates = eventStates
   }
 
   static fromJSON(json: {
-    value: { label: string; rankOrder: number }[]
+    value: { value: { label: string; orderRank: number; id: number } }[]
   }): EventStates {
-    return new EventStates(json.value.map((es) => EventState.fromJSON(es)))
+    return new EventStates(
+      json.value.reduce((acc: Record<number, EventState>, eventState) => {
+        acc[eventState.value.id] = EventState.fromJSON(eventState)
+        return acc
+      }, {})
+    )
   }
 }
 
@@ -43,13 +50,20 @@ export class Event {
 }
 
 export class Events {
-  events: Event[]
+  events: Record<number, Event>
 
-  constructor(events: Event[]) {
+  constructor(events: Record<number, Event>) {
     this.events = events
   }
 
-  static fromJSON(json: { value: { id: number; title: string }[] }): Events {
-    return new Events(json.value.map((e) => Event.fromJSON(e)))
+  static fromJSON(json: {
+    value: { value: { id: number; title: string } }[]
+  }): Events {
+    return new Events(
+      json.value.reduce((acc: Record<number, Event>, event) => {
+        acc[event.value.id] = Event.fromJSON(event)
+        return acc
+      }, {})
+    )
   }
 }

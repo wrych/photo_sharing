@@ -2,22 +2,20 @@
 import { ref, onMounted } from 'vue'
 
 import type { Event } from '@/models/EventModel'
-import * as eventService from '@/services/eventService'
-import { useEventStore } from '@/stores/eventStore'
+import { useEventService } from '@/services/eventService'
 
-const eventStore = useEventStore()
+const eventService = useEventService()
 
 const eventForm = ref({
   title: ''
 })
-
-onMounted(async () => {
-  await eventService.getEventStates()
-  await eventService.getEvents()
-})
+const eventStates = eventService.getEventStates()
+const events = eventService.getEvents()
 
 const createEvent = async () => {
-  await eventService.createEvent(eventForm.value.title)
+  if (await eventService.createEvent(eventForm.value.title)) {
+    eventForm.value.title = ''
+  }
 }
 
 const deleteEvent = async (event: Event) => {
@@ -28,17 +26,17 @@ const deleteEvent = async (event: Event) => {
 <template>
   <div>
     <h1>API Event States</h1>
-    <div v-if="eventStore.eventStates">
+    <div v-if="eventStates">
       <ul>
-        <li v-for="es in eventStore.eventStates.eventStates">
+        <li v-for="es in eventStates.eventStates">
           {{ es.rankOrder }}: {{ es.label }}
         </li>
       </ul>
     </div>
     <div v-else>Loading Events States...</div>
-    <div v-if="eventStore.events">
+    <div v-if="events">
       <ul>
-        <li v-for="e in eventStore.events.events">
+        <li v-for="e in events.events">
           {{ e.id }}:
           <router-link :to="{ name: 'Event Detail', params: { id: e.id } }">
             {{ e.title }}
