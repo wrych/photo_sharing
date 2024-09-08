@@ -13,28 +13,30 @@ class EventRepository {
   }
 
   initEvents = () => {
-    if (!this.store.events) {
-      this.store.events = { events: {} }
-    }
+    return { events: {} }
   }
 
   updateEventById = this.logStateChange(
-    async (id: number): Promise<Event | undefined> => {
-      this.initEvents()
-      this.store.events.events[id] = await eventApi.getEventById(id)
-      return toRef(this.store.events.events, id)
+    async (id: number): Promise<Ref<Event | undefined>> => {
+      const event = await eventApi.getEventById(id)
+      return this.updateEvent(event)
     }
   )
 
-  updateEvent = this.logStateChange((e: Event): Ref<Event | undefined> => {
-    this.initEvents()
+  updateEvent = (e: Event): Ref<Event | undefined> => {
+    if (!this.store.events) {
+      this.store.events = this.initEvents()
+    }
     this.store.events.events[e.id] = e
     return toRef(this.store.events.events, e.id)
-  })
+  }
 
   getEventById = (id: number): Ref<Event | undefined> => {
+    if (!this.store.events) {
+      this.store.events = this.initEvents()
+    }
     if (!this.store.events?.events[id]) {
-      this.logStateChange(this.updateEventById)(id)
+      this.updateEventById(id)
     }
     return toRef(this.store.events.events, id)
   }
