@@ -2,7 +2,8 @@ import express, { Request, Response } from 'express'
 
 import { ensureAuthenticated } from './auth.js'
 import { imageUpload } from '../../data/storage.js'
-import { storeImage } from '../../services/image.js'
+import * as imageService from '../../services/image.js'
+import path from 'path'
 
 const imageRouter = express.Router()
 
@@ -14,15 +15,43 @@ imageRouter.post(
       return res.status(400).send('No image uploaded.')
     }
     const { description, eventId } = req.body
+    const image = await imageService.storeImage(
+      req.file.buffer,
+      eventId,
+      description
+    )
 
-    console.log('Description:', description)
-    console.log('Event ID:', eventId)
-    // storeImage(req.file.buffer, 1, 'some')
-
-    res.send({
-      message: 'Images uploaded and resized successfully!'
+    res.status(201).send({
+      value: imageService.getImageById(image.id)
     })
   }
 )
 
-export default imageRouter
+imageRouter.get('/:id', async (req, res) => {
+  const image = await imageService.getImageById(parseInt(req.params.id))
+  res.status(200).send({
+    value: image
+  })
+})
+
+const imagesRouter = express.Router()
+const rootpath = process.cwd()
+
+imagesRouter.get('/:file', async (req, res) => {
+  const sourceId = parseInt(path.parse(req.params.file).name)
+  const imageSource = await imageService.getImageSourceById(sourceId)
+
+  if (imageSource) {
+    const fspath = path.join(rootpath, imageSource.filepath)
+    console.log(fspath)
+    res.sendFile(fspath, (err) => {
+      if (err) {
+        res.status(404).send({ message: 'File not found!' })
+      }
+    })
+  } else {
+    res.status(404).send({ message: 'File not found!' })
+  }
+})
+
+export { imageRouter, imagesRouter }
