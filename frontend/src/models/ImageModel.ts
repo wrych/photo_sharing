@@ -1,14 +1,23 @@
+interface ImageDTO {
+  value: {
+    id: number
+    description: string
+    eventId: number
+    image_sources: ImageSourceDTO[]
+  }
+}
+
 export class Image {
   id: number
   description: string
   eventId: number
-  imageSources: ImageSource[]
+  imageSources: Record<number, ImageSource>
 
   constructor(
     id: number,
     description: string,
     eventId: number,
-    imageSources: ImageSource[]
+    imageSources: Record<number, ImageSource>
   ) {
     this.id = id
     this.description = description
@@ -16,36 +25,79 @@ export class Image {
     this.imageSources = imageSources
   }
 
-  static fromJSON(json: {
-    value: {
-      id: number
-      description: string
-      eventId: number
-      imageSources: ImageSource[]
-    }
-  }): Image {
+  static fromJSON(json: ImageDTO): Image {
     return new Image(
       json.value.id,
       json.value.description,
       json.value.eventId,
-      json.value.imageSources.map((is) => ImageSource.fromJSON(is))
+      json.value.image_sources.reduce(
+        (acc: Record<number, ImageSource>, is) => {
+          acc[is.value.id] = ImageSource.fromJSON(is)
+          return acc
+        },
+        {}
+      )
     )
   }
 }
 
-export class EventStates {
-  eventStates: Record<number, EventState>
+interface ImageSourceDTO {
+  value: {
+    id: number
+    href: string
+    width: number
+    height: number
+    isOriginal: boolean
+  }
+}
 
-  constructor(eventStates: Record<number, EventState>) {
-    this.eventStates = eventStates
+export class ImageSource {
+  id: number
+  href: string
+  width: number
+  height: number
+  isOriginal: boolean
+
+  constructor(
+    id: number,
+    href: string,
+    width: number,
+    height: number,
+    isOriginal: boolean
+  ) {
+    this.id = id
+    this.href = href
+    this.width = width
+    this.height = height
+    this.isOriginal = isOriginal
   }
 
-  static fromJSON(json: {
-    value: { value: { label: string; orderRank: number; id: number } }[]
-  }): EventStates {
-    return new EventStates(
-      json.value.reduce((acc: Record<number, EventState>, eventState) => {
-        acc[eventState.value.id] = EventState.fromJSON(eventState)
+  static fromJSON(json: ImageSourceDTO): ImageSource {
+    return new ImageSource(
+      json.value.id,
+      json.value.href,
+      json.value.width,
+      json.value.height,
+      json.value.isOriginal
+    )
+  }
+}
+
+interface ImagesDTO {
+  value: ImageDTO[]
+}
+
+export class Images {
+  images: Record<number, Image>
+
+  constructor(images: Record<number, Image>) {
+    this.images = images
+  }
+
+  static fromJSON(json: ImagesDTO): Images {
+    return new Images(
+      json.value.reduce((acc: Record<number, Image>, image) => {
+        acc[image.value.id] = Image.fromJSON(image)
         return acc
       }, {})
     )

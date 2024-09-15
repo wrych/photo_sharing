@@ -2,8 +2,6 @@ import type { Event, Events, EventStates } from '@/models/EventModel'
 import { useEventRepository } from '@/repositories/eventRepository'
 import type { Ref } from 'vue'
 import * as eventApi from '@/apis/eventApi'
-import * as imageApi from '@/apis/imageApi'
-import type { AxiosProgressEvent } from 'axios'
 
 class EventService {
   private repository = useEventRepository()

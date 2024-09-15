@@ -1,3 +1,5 @@
+import type { Images } from './ImageModel'
+
 export class EventState {
   id: number
   label: string
@@ -38,6 +40,7 @@ export class EventStates {
 export class Event {
   id: number
   title: string
+  images: Images | undefined
 
   constructor(id: number, title: string) {
     this.id = id

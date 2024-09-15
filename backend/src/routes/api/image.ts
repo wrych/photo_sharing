@@ -37,13 +37,19 @@ imageRouter.get('/:id', async (req, res) => {
 const imagesRouter = express.Router()
 const rootpath = process.cwd()
 
+imagesRouter.get('/', async (req, res) => {
+  const eventId = parseInt(req.query.event_id)
+  res
+    .status(200)
+    .send({ value: await imageService.getImagesByEventId(eventId) })
+})
+
 imagesRouter.get('/:file', async (req, res) => {
   const sourceId = parseInt(path.parse(req.params.file).name)
   const imageSource = await imageService.getImageSourceById(sourceId)
 
   if (imageSource) {
     const fspath = path.join(rootpath, imageSource.filepath)
-    console.log(fspath)
     res.sendFile(fspath, (err) => {
       if (err) {
         res.status(404).send({ message: 'File not found!' })

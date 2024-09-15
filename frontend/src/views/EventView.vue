@@ -1,6 +1,7 @@
 <template>
-  <div v-if="event">
-    <h2>Event Details for {{ event.id }}: {{ event.title }}</h2>
+  <div v-if="event === undefined">Loading event...</div>
+  <div v-else-if="images">
+    <h2>{{ event.title }}</h2>
     <form @submit.prevent="upload">
       <label for="file">Picture</label>
       <input
@@ -23,12 +24,19 @@
   </div>
   <div v-else-if="event === undefined">Loading event information...</div>
   <div v-else>Unexpected state...</div>
+  <hr />
+  <div v-if="images === undefined">Loading images...</div>
+  <div v-else-if="images">
+    <h3>Images</h3>
+    <PictureComponent v-for="i in images.images" :image="i" class="picture" />
+  </div>
 </template>
 
 <script setup lang="ts">
+import PictureComponent from '@/components/PictureComponent.vue'
 import { useRoute } from 'vue-router'
 import { useEventService } from '@/services/eventService'
-import { ref, type Ref } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 import { useImageService } from '@/services/imageService'
 
 const route = useRoute()
@@ -36,6 +44,7 @@ const eventService = useEventService()
 const imageService = useImageService()
 
 const event = eventService.getEventById(parseInt(route.params.id))
+const images = imageService.getImagesByEvent(event)
 const uploadForm: Ref<{ selectedFile: File | null; description: string }> = ref(
   {
     selectedFile: null,
@@ -54,11 +63,20 @@ const upload = async (): Promise<void> => {
   if (!uploadForm.value.selectedFile || !event.value) {
     throw Error('unexpected error')
   }
-  imageService.uploadImage(
+  const upload = imageService.uploadImage(
     uploadForm.value.selectedFile,
     uploadForm.value.description,
     event.value,
     (e) => {}
   )
+  await upload
+  uploadForm.value.selectedFile = null
+  uploadForm.value.description = ''
 }
 </script>
+
+<style scoped>
+.picture {
+  width: 300px;
+}
+</style>

@@ -11,6 +11,30 @@ import Image, {
 
 const DEFAULT_FORMAT = 'webp'
 
+const toImageDTO = (image: Image): ImageDTO | null => {
+  if (image) {
+    const plainImage = image.get({ plain: true })
+
+    if (plainImage.image_sources) {
+      const imageSourcesWithHref: ImageSourceDTO[] =
+        plainImage.image_sources.map((source: any) => ({
+          value: {
+            ...source,
+            href: `/api/images/${source.id}.${source.format}`
+          }
+        }))
+
+      return {
+        id: plainImage.id,
+        event_id: plainImage.event_id,
+        description: plainImage.description,
+        image_sources: imageSourcesWithHref
+      }
+    }
+  }
+  return null
+}
+
 const getImageById = async (id: number): Promise<ImageDTO | null> => {
   const image = await Image.findOne({
     where: { id: id },
@@ -22,27 +46,21 @@ const getImageById = async (id: number): Promise<ImageDTO | null> => {
       }
     ]
   })
+  return toImageDTO(image)
+}
 
-  if (image) {
-    const plainImage = image.get({ plain: true })
-
-    if (plainImage.image_sources) {
-      const imageSourcesWithHref: ImageSourceDTO[] =
-        plainImage.image_sources.map((source: any) => ({
-          ...source,
-          href: `/api/images/${source.id}.${source.format}`
-        }))
-
-      return {
-        id: plainImage.id,
-        event_id: plainImage.event_id,
-        description: plainImage.description,
-        image_sources: imageSourcesWithHref
+const getImagesByEventId = async (id: number) => {
+  const images = await Image.findAll({
+    where: { event_id: id },
+    include: [
+      {
+        model: ImageSource,
+        as: 'image_sources',
+        attributes: ['id', 'width', 'height', 'format', 'size', 'is_original']
       }
-    }
-  }
-
-  return null // Return null if no image found
+    ]
+  })
+  return images.map((image) => ({ value: toImageDTO(image) }))
 }
 
 const storeImage = async (
@@ -58,7 +76,6 @@ const storeImage = async (
       throw Error('Could not read metadata.')
     }
     let width = 320
-    let images: Sharp[] = []
     const dbImage = await Image.create({
       event_id: eventId,
       description: description
@@ -131,4 +148,4 @@ const getImageSourceById = async (id: number) => {
   return await ImageSource.findOne({ where: { id: id } })
 }
 
-export { storeImage, getImageById, getImageSourceById }
+export { storeImage, getImageById, getImageSourceById, getImagesByEventId }

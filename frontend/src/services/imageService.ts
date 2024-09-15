@@ -1,9 +1,15 @@
 import type { Event } from '@/models/EventModel'
 import * as imageApi from '@/apis/imageApi'
 import type { AxiosProgressEvent } from 'axios'
+import { toRef } from 'vue'
+import { useImageRepository } from '@/repositories/imageRepository'
 
 class ImageService {
-  //   private repository = useImageRepository()
+  private repository = useImageRepository()
+
+  getImagesByEvent = (event: Event) => {
+    return toRef(this.repository.getImagesByEvent(event))
+  }
 
   uploadImage = async (
     file: File,
