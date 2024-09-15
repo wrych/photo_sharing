@@ -53,6 +53,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+div {
+  display: inline-block;
+}
 picture {
   width: 100%;
 }

@@ -5,12 +5,8 @@ import { Image, Images } from '@/models/ImageModel'
 import { Event } from '@/models/EventModel'
 
 class ImageRepository {
-  getImagesByEvent = (event: Event): Ref<Images | undefined> => {
-    const images = ref<Images | undefined>(undefined)
-    watch(event, async (newEvent) => {
-      images.value = await imageApi.getImagesByEvent(newEvent)
-    })
-    return images
+  getImagesByEvent = async (event: Event): Ref<Images | undefined> => {
+    return await imageApi.getImagesByEvent(event)
   }
 
   getImageById = (id: number): Ref<Image | undefined> => {
@@ -19,6 +15,13 @@ class ImageRepository {
       image.value = await imageApi.getImageById(id)
     })()
     return image
+  }
+
+  updateImagesByEvent = async (
+    event: Event,
+    images: Ref<Images | undefined>
+  ): Promise<void> => {
+    images.value = 
   }
 }
 
