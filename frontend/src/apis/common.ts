@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from 'axios'
+import axios, { type AxiosProgressEvent, type AxiosResponse } from 'axios'
 
 export class BadResponseFormatError extends Error {
   constructor(received: string, expected: string) {
@@ -30,9 +30,24 @@ const postJson = async (
   return res.data
 }
 
+const postForm = async (
+  resource: string,
+  formData: FormData,
+  onUploadProgress: (progressEvent: AxiosProgressEvent) => void
+): Promise<{}> => {
+  const res = await axios.post(resource, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    onUploadProgress: onUploadProgress
+  })
+  checkContentType(res)
+  return res.data
+}
+
 const deleteJson = async (resource: string): Promise<{}> => {
   const res = await axios.delete<{}>(resource)
   checkContentType(res)
   return res.data
 }
-export { postJson, getJson, deleteJson }
+export { postJson, postForm, getJson, deleteJson }

@@ -27,11 +27,6 @@ class AuthService {
   )
 }
 
-let authService: AuthService | null = null
-
 export const useAuthService = (): AuthService => {
-  if (!authService) {
-    authService = new AuthService()
-  }
-  return authService
+  return new AuthService()
 }

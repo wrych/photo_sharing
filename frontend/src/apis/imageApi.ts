@@ -1,6 +1,6 @@
 import { Event } from '@/models/EventModel'
 import axios, { type AxiosProgressEvent } from 'axios'
-import { getJson } from './common'
+import { getJson, postForm } from './common'
 import { Image, Images } from '@/models/ImageModel'
 
 const upload = async (
@@ -8,17 +8,14 @@ const upload = async (
   description: string,
   event: Event,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void
-): Promise<void> => {
+): Promise<Image> => {
   const formData = new FormData()
   formData.append('image', file)
   formData.append('description', description)
   formData.append('eventId', event.id.toString())
-  axios.post('/api/image/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    },
-    onUploadProgress: onUploadProgress
-  })
+  return Image.fromJSON(
+    await postForm(`/api/image/upload`, formData, onUploadProgress)
+  )
 }
 
 const getImageById = async (id: number): Promise<Image> => {

@@ -1,6 +1,6 @@
 <template>
   <div v-if="event === undefined">Loading event...</div>
-  <div v-else-if="images">
+  <div v-else-if="event">
     <h2>{{ event.title }}</h2>
     <form @submit.prevent="upload">
       <label for="file">Picture</label>
@@ -21,15 +21,14 @@
       />
       <button type="submit">Upload</button>
     </form>
+    <hr />
+    <div v-if="images === undefined">Loading images...</div>
+    <div v-else-if="images">
+      <h3>Images</h3>
+      <PictureComponent v-for="i in images.images" :image="i" class="picture" />
+    </div>
   </div>
-  <div v-else-if="event === undefined">Loading event information...</div>
   <div v-else>Unexpected state...</div>
-  <hr />
-  <div v-if="images === undefined">Loading images...</div>
-  <div v-else-if="images">
-    <h3>Images</h3>
-    <PictureComponent v-for="i in images.images" :image="i" class="picture" />
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -41,10 +40,12 @@ import { useImageService } from '@/services/imageService'
 
 const route = useRoute()
 const eventService = useEventService()
-const imageService = useImageService()
 
 const event = eventService.getEventById(parseInt(route.params.id))
-const images = imageService.getImagesByEvent(event)
+
+const imageService = useImageService(event)
+const images = imageService.getImages()
+
 const uploadForm: Ref<{ selectedFile: File | null; description: string }> = ref(
   {
     selectedFile: null,
@@ -66,8 +67,9 @@ const upload = async (): Promise<void> => {
   const upload = imageService.uploadImage(
     uploadForm.value.selectedFile,
     uploadForm.value.description,
-    event.value,
-    (e) => {}
+    (e) => {
+      console.log(e)
+    }
   )
   await upload
   uploadForm.value.selectedFile = null

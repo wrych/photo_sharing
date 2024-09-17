@@ -2,38 +2,49 @@ import type { Event } from '@/models/EventModel'
 import * as imageApi from '@/apis/imageApi'
 import type { AxiosProgressEvent } from 'axios'
 import { ref, toRef, type Ref } from 'vue'
-import { useImageRepository } from '@/repositories/imageRepository'
+import {
+  useImageRepository,
+  ImageRepository
+} from '@/repositories/imageRepository'
 import type { Images } from '@/models/ImageModel'
 
 class ImageService {
-  private repository = useImageRepository()
   event = ref<Event | undefined>(undefined)
+  private repository!: ImageRepository
   images = ref<Images | undefined>(undefined)
 
-  getImagesByEvent = (event: Event) => {
-    return toRef(this.repository.getImagesByEvent(event))
-    watch(event, async (newEvent) => {
-      this.updateImagesByEvent(newEvent)
-    })
-    return this.images
+  constructor(event: Ref<Event | undefined>) {
+    this.event = event
+    this.repository = useImageRepository(this.event)
   }
 
-  updateImagesByEvent = (event: Event, images: Ref<Images | undefined>) => {
-    return this.repository.updateImagesByEvent(event, images)
+  getImages = () => {
+    return this.repository.getImages()
+  }
+
+  updateImages = () => {
+    return this.repository.updateImages()
   }
 
   uploadImage = async (
     file: File,
     description: string,
-    event: Event,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => void
   ): Promise<void> => {
-    console.log(
-      await imageApi.upload(file, description, event, onUploadProgress)
-    )
+    if (this.event.value) {
+      const image = await imageApi.upload(
+        file,
+        description,
+        this.event.value,
+        onUploadProgress
+      )
+      this.repository.updateImage(image)
+    }
   }
 }
 
-export const useImageService = (): ImageService => {
-  return new ImageService()
+export const useImageService = (
+  event: Ref<Event | undefined>
+): ImageService => {
+  return new ImageService(event)
 }

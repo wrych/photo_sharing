@@ -4,9 +4,39 @@ import * as imageApi from '@/apis/imageApi'
 import { Image, Images } from '@/models/ImageModel'
 import { Event } from '@/models/EventModel'
 
-class ImageRepository {
-  getImagesByEvent = async (event: Event): Ref<Images | undefined> => {
-    return await imageApi.getImagesByEvent(event)
+export class ImageRepository {
+  event = ref<Event | undefined>(undefined)
+  private images = ref<Images | undefined>(undefined)
+
+  constructor(event: Ref<Event | undefined>) {
+    this.event = event
+  }
+
+  load = async () => {
+    if (this.event.value) {
+      this.images.value = await imageApi.getImagesByEvent(this.event.value)
+    }
+    return this.images
+  }
+
+  updateImage = (image: Image) => {
+    if (this.images.value) {
+      this.images.value.images[image.id] = image
+    }
+    this.updateImages()
+    return this.images
+  }
+
+  getImages = (): Ref<Images | undefined> => {
+    if (!this.event.value) {
+      const unwatch = watch(this.event, async (e) => {
+        this.load()
+        unwatch()
+      })
+    } else {
+      this.updateImages()
+    }
+    return this.images
   }
 
   getImageById = (id: number): Ref<Image | undefined> => {
@@ -17,19 +47,16 @@ class ImageRepository {
     return image
   }
 
-  updateImagesByEvent = async (
-    event: Event,
-    images: Ref<Images | undefined>
-  ): Promise<void> => {
-    images.value = 
+  updateImages = async (): Promise<Ref<Images | undefined>> => {
+    if (this.event.value) {
+      await this.load()
+    }
+    return this.images
   }
 }
 
-let imageRepository: ImageRepository | null = null
-
-export const useImageRepository = (): ImageRepository => {
-  if (!imageRepository) {
-    imageRepository = new ImageRepository()
-  }
-  return imageRepository
+export const useImageRepository = (
+  event: Ref<Event | undefined>
+): ImageRepository => {
+  return new ImageRepository(event)
 }

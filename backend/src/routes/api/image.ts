@@ -20,9 +20,8 @@ imageRouter.post(
       eventId,
       description
     )
-
     res.status(201).send({
-      value: imageService.getImageById(image.id)
+      value: await imageService.getImageById(image.id)
     })
   }
 )

@@ -34,8 +34,5 @@ class EventService {
 let eventService: EventService | null = null
 
 export const useEventService = (): EventService => {
-  if (!eventService) {
-    eventService = new EventService()
-  }
-  return eventService
+  return new EventService()
 }
