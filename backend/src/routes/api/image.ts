@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express'
 
-import { ensureAuthenticated } from './auth.js'
 import { imageUpload } from '../../data/storage.js'
 import * as imageService from '../../services/image.js'
 import path from 'path'

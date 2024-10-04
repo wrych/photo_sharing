@@ -5,8 +5,12 @@
   "scripts": {
     "start": "node dist/www.js",
     "build": "tsc",
-    "dev": "npx tsx src/www.ts"
+    "dev": "npx tsx src/www.ts",
   },
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "dependencies": {
     "argon2": "^0.41.1",
     "connect-session-sequelize": "^7.1.7",
@@ -39,6 +43,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/pluralize": "^0.0.33",
     "@types/sharp": "^0.32.0",
+    "copyfiles": "^2.4.1",
     "debug": "^4.3.7",
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
