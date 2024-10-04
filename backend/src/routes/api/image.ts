@@ -6,13 +6,16 @@ import * as imageService from '../../services/image.js'
 import path from 'path'
 
 const imageRouter = express.Router()
+const imagesRouter = express.Router()
+const rootpath = process.cwd()
 
 imageRouter.post(
   '/upload',
   imageUpload.single('image'),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response) : Promise<void> => {
     if (!req.file) {
-      return res.status(400).send('No image uploaded.')
+      res.status(400).send('No image uploaded.')
+      return
     }
     const { description, eventId } = req.body
     const image = await imageService.storeImage(
@@ -33,12 +36,11 @@ imageRouter.get('/:id', async (req, res) => {
   })
 })
 
-const imagesRouter = express.Router()
-const rootpath = process.cwd()
 
 imagesRouter.get('/', async (req, res) => {
   if (!req.query.event_id) {
-    return res.status(400).send({ message: 'Event ID is required!' })
+    res.status(400).send({ message: 'Event ID is required!' })
+    return 
   }
   const eventId = parseInt(req.query.event_id as string)
   res

@@ -44,6 +44,7 @@ Image.init(
 export interface ImageSourceAttributes {
   id?: number
   image_id: number
+  filename: string
   filepath: string
   width: number
   height: number
@@ -58,6 +59,7 @@ class ImageSource
 {
   declare id: number
   declare image_id: number
+  declare filename: string
   declare filepath: string
   declare width: number
   declare height: number
@@ -80,6 +82,10 @@ ImageSource.init(
         model: Image,
         key: 'id'
       }
+    },
+    filename: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     filepath: {
       type: DataTypes.TEXT,
@@ -130,7 +136,7 @@ interface ImageDTO {
   id: number
   event_id: number
   description: string
-  image_sources: ImageSourceDTO[]
+  image_sources: {value: ImageSourceDTO}[]
 }
 
 export default Image

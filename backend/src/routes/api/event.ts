@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import * as eventStateService from '../../services/eventState.js'
 import * as eventService from '../../services/event.js'
 import { ensureAuthenticated } from './auth.js'
@@ -14,7 +14,7 @@ eventRouter.get('/', ensureAuthenticated, async (req, res) => {
   })
 })
 
-eventRouter.post('/new', ensureAuthenticated, async (req, res) => {
+eventRouter.post('/new', ensureAuthenticated, async (req : Request, res: Response) => {
   const newEvent = await eventService.create(req.user!, req.body.title)
   res.status(201).json({
     value: newEvent

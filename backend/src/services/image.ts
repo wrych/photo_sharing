@@ -11,21 +11,25 @@ import Image, {
 
 const DEFAULT_FORMAT = 'webp'
 
+interface ImageWithSource extends Image{
+  image_sources: ImageSource[]
+}
+
 const toImageDTO = (image: Image): ImageDTO | null => {
   if (image) {
-    const plainImage = image.get({ plain: true })
+    const plainImage = image.get({ plain: true }) as ImageWithSource
 
     if (plainImage.image_sources) {
-      const imageSourcesWithHref: ImageSourceDTO[] =
+      const imageSourcesWithHref =
         plainImage.image_sources.map((source: any) => ({
           value: {
             ...source,
             href: `/api/images/${source.id}.${source.format}`
-          }
+          } as ImageSourceDTO
         }))
 
       return {
-        id: plainImage.id,
+        id: plainImage.id!,
         event_id: plainImage.event_id,
         description: plainImage.description,
         image_sources: imageSourcesWithHref
