@@ -21,7 +21,7 @@ const markMigrationComplete = async (): Promise<void> => {
 
 const setupAlice = async (): Promise<void> => {
   try {
-    registerUser('alice', 'letmein')
+    await registerUser('alice', 'letmein')
     console.log('User Alice has been set up.')
   } catch (error) {
     console.error('Error setting up user Alice:', error)

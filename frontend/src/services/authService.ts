@@ -1,4 +1,4 @@
-import type { AuthUser } from '@/models/AuthModel'
+import type { AuthUser } from '@/models/AuthUserModel'
 import { useAuthRepository } from '@/repositories/authRepository'
 import * as authApi from '@/apis/authApi'
 import type { Ref } from 'vue'
@@ -6,7 +6,7 @@ import type { Ref } from 'vue'
 class AuthService {
   private repository = useAuthRepository()
 
-  getUser = (): AuthUser | null => {
+  getUser = (): Ref<AuthUser | null | undefined> => {
     return this.repository.getUser()
   }
 

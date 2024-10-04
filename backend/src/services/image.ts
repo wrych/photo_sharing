@@ -46,6 +46,9 @@ const getImageById = async (id: number): Promise<ImageDTO | null> => {
       }
     ]
   })
+  if (!image) {
+    return null
+  }
   return toImageDTO(image)
 }
 
@@ -88,6 +91,7 @@ const storeImage = async (
     return dbImage
   } catch (err) {
     console.log(err)
+    throw new Error('Could not store image.')
   }
 }
 
@@ -144,7 +148,7 @@ const createImageSource = async (
   })
 }
 
-const getImageSourceById = async (id: number) => {
+const getImageSourceById = async (id: number): Promise<ImageSource | null> => {
   return await ImageSource.findOne({ where: { id: id } })
 }
 

@@ -1,6 +1,6 @@
 import { AuthUser } from '@/models/AuthUserModel'
 import { defineStore } from 'pinia'
-import { ref, toRef } from 'vue'
+import { ref } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
   const isProcessing = ref<boolean>(false)

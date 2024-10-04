@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 
 import { useAuthStore } from '@/stores/authStore'
 import * as authApi from '@/apis/authApi'
-import type { AuthUser } from '@/models/AuthModel'
+import type { AuthUser } from '@/models/AuthUserModel'
 
 import { logStateChange } from './common'
 
@@ -18,7 +18,7 @@ class AuthRepository {
     this.store.user = await authApi.getUser()
   }
 
-  getUser = (): Ref<AuthUser | null> => {
+  getUser = (): Ref<AuthUser | null | undefined> => {
     if (this.store.user === undefined) {
       this.logStateChange(this.updateUser)()
     }

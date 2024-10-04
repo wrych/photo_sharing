@@ -15,27 +15,27 @@ const checkContentType = (
   }
 }
 
-const getJson = async (resource: string): Promise<{}> => {
-  const res = await axios.get<{}>(resource)
+const getJson = async <T>(resource: string): Promise<T> => {
+  const res = await axios.get<T>(resource)
   checkContentType(res)
   return res.data
 }
 
-const postJson = async (
+const postJson = async <T>(
   resource: string,
   payload: {} | null = null
-): Promise<{}> => {
-  const res = await axios.post<{}>(resource, payload)
+): Promise<T> => {
+  const res = await axios.post<T>(resource, payload)
   checkContentType(res)
   return res.data
 }
 
-const postForm = async (
+const postForm = async <T>(
   resource: string,
   formData: FormData,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void
-): Promise<{}> => {
-  const res = await axios.post(resource, formData, {
+): Promise<T> => {
+  const res = await axios.post<T>(resource, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     },

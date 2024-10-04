@@ -26,21 +26,17 @@ passport.use(
   )
 )
 
-type SerializableUser = {
-  id?: number
-  username?: string
-}
-
-passport.serializeUser((user: SerializableUser, cb) => {
-  process.nextTick(() => {
-    return cb(null, { id: user.id, username: user.username })
-  })
+passport.serializeUser((user, cb) => {
+  cb(null, (user as User).id)
 })
 
-passport.deserializeUser(function (user: User, cb) {
-  process.nextTick(function () {
-    return cb(null, user)
-  })
+passport.deserializeUser(async (id: string, cb) => {
+  try {
+    const user = await User.findByPk(id)
+    cb(null, user)
+  } catch (err) {
+    cb(err, null)
+  }
 })
 
 const router = express.Router()

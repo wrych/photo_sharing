@@ -4,10 +4,9 @@ import NavigationComponent from './components/NavigationComponent.vue'
 </script>
 
 <template>
-  <header>
+  <header v-if="!$route.path.startsWith('/event/')">
     <NavigationComponent />
   </header>
-
   <RouterView />
 </template>
 

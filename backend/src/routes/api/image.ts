@@ -37,7 +37,10 @@ const imagesRouter = express.Router()
 const rootpath = process.cwd()
 
 imagesRouter.get('/', async (req, res) => {
-  const eventId = parseInt(req.query.event_id)
+  if (!req.query.event_id) {
+    return res.status(400).send({ message: 'Event ID is required!' })
+  }
+  const eventId = parseInt(req.query.event_id as string)
   res
     .status(200)
     .send({ value: await imageService.getImagesByEventId(eventId) })

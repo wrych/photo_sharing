@@ -1,22 +1,43 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import ORM from '../data/ORM.js'
 
-const EventState = ORM.define('EventState', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+export interface EventStateAttributes {
+  id?: number
+  orderRank: number
+  label: string
+}
+
+class EventState
+  extends Model<EventStateAttributes>
+  implements EventStateAttributes
+{
+  declare id: number
+  declare orderRank: number
+  declare label: string
+}
+
+EventState.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    orderRank: {
+      type: DataTypes.INTEGER,
+      unique: true,
+      allowNull: false
+    },
+    label: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    }
   },
-  orderRank: {
-    type: DataTypes.INTEGER,
-    unique: true,
-    allowNull: false
-  },
-  label: {
-    type: DataTypes.TEXT,
-    allowNull: false
+  {
+    sequelize: ORM,
+    modelName: 'EventState'
   }
-})
+)
 
 const setupEventStates = async () => {
   await EventState.create({

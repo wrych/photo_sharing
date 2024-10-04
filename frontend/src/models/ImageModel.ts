@@ -1,4 +1,4 @@
-interface ImageDTO {
+export interface ImageDTO {
   value: {
     id: number
     description: string
@@ -41,7 +41,7 @@ export class Image {
   }
 }
 
-interface ImageSourceDTO {
+export interface ImageSourceDTO {
   value: {
     id: number
     href: string
@@ -83,7 +83,7 @@ export class ImageSource {
   }
 }
 
-interface ImagesDTO {
+export interface ImagesDTO {
   value: ImageDTO[]
 }
 

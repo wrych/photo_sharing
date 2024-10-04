@@ -57,10 +57,13 @@ div {
   display: inline-block;
 }
 picture {
-  width: 100%;
+  height: 100%;
+  border-radius: 5px;
 }
 img {
-  width: 100%;
-  height: auto;
+  height: 100%;
+  width: auto;
+  padding: 2px;
+  border-radius: 5px;
 }
 </style>
