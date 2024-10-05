@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run type-check && npm run build-only && npm run copy-files",
+    "build": "npm run type-check && npm run clean && npm run build-only && npm run copy-files",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "copy-files": "copyfiles -u 1 dist/index.html dist/**/* ../backend/app"
+    "copy-files": "copyfiles -u 1 dist/index.html dist/**/* ../backend/app",
+    "clean": "rm -rf dist && rm -rf ../backend/app"
   },
   "files": [
     "dist",

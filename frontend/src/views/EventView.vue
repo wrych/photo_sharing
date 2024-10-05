@@ -186,7 +186,7 @@ button:hover {
 }
 
 .picture {
-  height: 250px;
+  height: 200px;
 }
 
 .preview {
@@ -244,5 +244,11 @@ button:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+}
+
+@media screen and (min-width: 1024px) {
+  .picture {
+    height: 250px;
+  }
 }
 </style>

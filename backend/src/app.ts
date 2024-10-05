@@ -66,7 +66,10 @@ app.use((err: HttpError, req: Request, res: Response) => {
   res.render('error')
 })
 
-await syncDatabase()
-await runInitialSetup('development')
+const startServer = async () => {
+  await syncDatabase()
+  await runInitialSetup('development')
+}
+startServer()
 
 export default app

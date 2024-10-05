@@ -30,7 +30,8 @@
     "build": "npm run build --prefix frontend && npm run build --prefix backend",
     "lint": "eslint . --fix --ignore-path backend/.gitignore --ignore-path frontend/.gitignore",
     "format": "prettier --write backend/ frontend/src",
-    "pack": "npm run build && npm pack --prefix backend"
+    "pack": "npm run build && cd backend && npm pack && cd -",
+    "clean": "npm run clean --prefix frontend && npm run clean --prefix backend"
   },
   "license": "Unlicense",
   "devDependencies": {

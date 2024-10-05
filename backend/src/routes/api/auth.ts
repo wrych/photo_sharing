@@ -17,7 +17,8 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 }
 
 authRouter.get('/user', (req: Request, res: Response) => {
-  res.status(200).json({ value: req.user ? req.user : null })
+  const u = req.user as User
+  res.status(200).json({ value: u ? u : null })
 })
 
 authRouter.post(
