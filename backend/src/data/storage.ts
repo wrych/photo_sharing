@@ -1,6 +1,8 @@
 import multer, { FileFilterCallback } from 'multer'
 import fs from 'fs'
 import { Request } from 'express'
+import { rootPath } from '../meta.js'
+import path from 'path'
 
 interface MulterFile {
   fieldname: string
@@ -42,10 +44,8 @@ const createUploadsFolder = (folderName: string): void => {
 const storage = multer.memoryStorage()
 const imageUpload = multer({ storage: storage })
 
-const uploadFolder = 'var/image/'
-createUploadsFolder(uploadFolder)
-const getUploadFolder = () => {
-  return uploadFolder
-}
+const storageFolder = path.join(rootPath, 'var', 'image')
+createUploadsFolder(storageFolder)
+console.log(`Image storage folder: ${storageFolder}`)
 
-export { getUploadFolder, imageUpload }
+export { storageFolder, imageUpload }

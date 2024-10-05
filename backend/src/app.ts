@@ -13,6 +13,8 @@ import apiRouter from './routes/api/api.js'
 import authRouter from './routes/auth.js'
 import ORM from './data/ORM.js'
 import syncDatabase, { runInitialSetup } from './initialSetup.js'
+import { rootPath } from './meta.js'
+import path from 'path'
 
 dotenv.config()
 
@@ -27,7 +29,6 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static('./public'))
 const SequelizeStore = connectSessionSequelize(session.Store)
 app.use(
   session({
@@ -43,8 +44,15 @@ app.use(
 )
 app.use(passport.authenticate('session'))
 
+app.use(express.static(path.join(rootPath, 'public')))
+app.use(express.static(path.join(rootPath, 'app')))
 app.use('/api', apiRouter)
 app.use('/_auth', authRouter)
+
+const appEntryPoint = path.join(rootPath, '/app/', 'index.html')
+app.get('*', (req, res) => {
+  res.sendFile(appEntryPoint)
+})
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404))

@@ -27,9 +27,10 @@
   },
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
     "lint": "eslint . --fix --ignore-path backend/.gitignore --ignore-path frontend/.gitignore",
-    "format": "prettier --write backend/ frontend/src"
+    "format": "prettier --write backend/ frontend/src",
+    "pack": "npm run build && npm pack --prefix backend"
   },
   "license": "Unlicense",
   "devDependencies": {

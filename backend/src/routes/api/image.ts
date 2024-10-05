@@ -1,17 +1,16 @@
 import express, { Request, Response } from 'express'
 
-import { imageUpload } from '../../data/storage.js'
+import { storageFolder, imageUpload } from '../../data/storage.js'
 import * as imageService from '../../services/image.js'
 import path from 'path'
 
 const imageRouter = express.Router()
 const imagesRouter = express.Router()
-const rootpath = process.cwd()
 
 imageRouter.post(
   '/upload',
   imageUpload.single('image'),
-  async (req: Request, res: Response) : Promise<void> => {
+  async (req: Request, res: Response): Promise<void> => {
     if (!req.file) {
       res.status(400).send('No image uploaded.')
       return
@@ -35,11 +34,10 @@ imageRouter.get('/:id', async (req, res) => {
   })
 })
 
-
 imagesRouter.get('/', async (req, res) => {
   if (!req.query.event_id) {
     res.status(400).send({ message: 'Event ID is required!' })
-    return 
+    return
   }
   const eventId = parseInt(req.query.event_id as string)
   res
@@ -52,8 +50,7 @@ imagesRouter.get('/:file', async (req, res) => {
   const imageSource = await imageService.getImageSourceById(sourceId)
 
   if (imageSource) {
-    const fspath = path.join(rootpath, imageSource.filepath)
-    res.sendFile(fspath, (err) => {
+    res.sendFile(imageSource.filepath, (err) => {
       if (err) {
         res.status(404).send({ message: 'File not found!' })
       }

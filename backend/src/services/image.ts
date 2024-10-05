@@ -2,7 +2,7 @@ import sharp, { Sharp, FormatEnum } from 'sharp'
 import path from 'path'
 import crypto from 'crypto'
 
-import { getUploadFolder } from '../data/storage.js'
+import { storageFolder } from '../data/storage.js'
 import Image, {
   ImageDTO,
   ImageSource,
@@ -11,7 +11,7 @@ import Image, {
 
 const DEFAULT_FORMAT = 'webp'
 
-interface ImageWithSource extends Image{
+interface ImageWithSource extends Image {
   image_sources: ImageSource[]
 }
 
@@ -20,13 +20,14 @@ const toImageDTO = (image: Image): ImageDTO | null => {
     const plainImage = image.get({ plain: true }) as ImageWithSource
 
     if (plainImage.image_sources) {
-      const imageSourcesWithHref =
-        plainImage.image_sources.map((source: any) => ({
+      const imageSourcesWithHref = plainImage.image_sources.map(
+        (source: any) => ({
           value: {
             ...source,
             href: `/api/images/${source.id}.${source.format}`
           } as ImageSourceDTO
-        }))
+        })
+      )
 
       return {
         id: plainImage.id!,
@@ -111,7 +112,7 @@ const saveImageSource = async (
   const uuid = crypto.randomUUID()
   const metadata = await image.metadata()
   const filePath = path.join(
-    getUploadFolder(),
+    storageFolder,
     `${uuid}.${options?.format ? options.format : DEFAULT_FORMAT}`
   )
   const outputInfo = await saveImageToFile(image, options, metadata, filePath)

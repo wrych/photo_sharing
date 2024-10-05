@@ -5,11 +5,14 @@
   "scripts": {
     "start": "node dist/www.js",
     "build": "tsc",
-    "dev": "npx tsx src/www.ts",
+    "dev": "npx tsx src/www.ts"
   },
   "files": [
     "dist",
-    "package.json"
+    "public",
+    "app",
+    "package.json",
+    "src/views"
   ],
   "dependencies": {
     "argon2": "^0.41.1",
