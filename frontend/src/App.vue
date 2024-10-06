@@ -1,21 +1,12 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
+import NavigationComponent from './components/NavigationComponent.vue'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/apitest">API</RouterLink>
-      </nav>
-    </div>
+  <header v-if="!$route.path.startsWith('/event/')">
+    <NavigationComponent />
   </header>
-
   <RouterView />
 </template>
 

@@ -12,12 +12,12 @@
 	<header>
 		<% if (user) { %>
 			<h1>Welcome, <%= user.username %>!</h1>
-			<form action="/auth/logout/" method="post">
+			<form action="/_auth/logout/" method="post">
 				<button type="submit">logout</button>
 			</form>
 		<% } else { %>
 			<h1>Welcome, Guest!</h1>
-			<p><a href="/auth/login">log in</a> or <a href="/auth/signup/">sign up</a></p>
+			<p><a href="/_auth/login">log in</a> or <a href="/_auth/signup/">sign up</a></p>
 		<% } %>
 	</header>
 	<footer class="info">

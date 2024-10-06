@@ -25,20 +25,31 @@
     "type": "github",
     "url": "https://github.com/sponsors/wrych"
   },
-  "main": "backend/app.js",
   "scripts": {
-    "frontend-dev": "npm run dev --prefix frontend",
-    "start": "npm run start --prefix backend",
-    "build": "npm run build --prefix frontend",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path backend/.gitignore --ignore-path frontend/.gitignore",
-    "format": "prettier --write backend/ frontend/src"
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "lint": "eslint . --fix --ignore-path backend/.gitignore --ignore-path frontend/.gitignore",
+    "format": "prettier --write backend/ frontend/src",
+    "pack": "npm run build && cd backend && npm pack && cd -",
+    "clean": "npm run clean --prefix frontend && npm run clean --prefix backend"
   },
   "license": "Unlicense",
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.8.0",
+    "@eslint/js": "^8.56.0",
+    "@rushstack/eslint-patch": "^1.10.4",
+    "@types/eslint__js": "^8.42.3",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
     "@vue/eslint-config-prettier": "^9.0.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.23.0",
-    "prettier": "^3.2.5"
-  }
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "concurrently": "^9.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.28.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.8.0"
+  },
+  "dependencies": {}
 }
