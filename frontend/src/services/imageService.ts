@@ -16,6 +16,10 @@ export class ImageService {
   constructor(event: Ref<Event | undefined>) {
     this.event = event
     this.repository = useImageRepository(this.event)
+
+    setInterval(() => {
+      this.updateImages()
+    }, 10000)
   }
 
   getImages = () => {
@@ -31,10 +35,13 @@ export class ImageService {
     description: string,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => void
   ): Promise<Ref<Image>> => {
+    if (!this.event.value) {
+      throw new Error('Event is not set...')
+    }
     const image = await imageApi.upload(
       file,
       description,
-      this.event.value!,
+      this.event.value,
       onUploadProgress
     )
     return this.repository.updateImage(image)

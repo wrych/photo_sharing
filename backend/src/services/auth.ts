@@ -17,7 +17,6 @@ const verifyPassword = async (
       password,
       user.hashedPassword
     )
-    console.log('isPasswordCorrect', isPasswordCorrect)
     if (!isPasswordCorrect) {
       return cb(null, false, {
         message: incorrectUsernameOrPasswordMessage

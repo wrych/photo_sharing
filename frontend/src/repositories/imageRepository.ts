@@ -20,6 +20,7 @@ export class ImageRepository {
   }
 
   updateImage = (image: Image): Ref<Image> => {
+    console.log('updateImage', image)
     if (this.images.value) {
       this.images.value.images[image.id] = image
     }

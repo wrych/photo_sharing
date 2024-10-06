@@ -146,6 +146,7 @@ export const saveImageToFile = async (
 ): Promise<sharp.OutputInfo> => {
   return await image
     .resize(options?.width ? options.width : metadata.width)
+    .rotate()
     .toFormat(options?.format ? options.format : DEFAULT_FORMAT)
     .toFile(filePath)
 }

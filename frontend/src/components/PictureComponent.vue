@@ -1,6 +1,6 @@
 <template>
   <div v-bind="$attrs" ref="container">
-    <picture v-if="image">
+    <picture v-if="image && imageSources && orderedSources">
       <source :srcset="imageSources" :sizes="currentSize" />
       <img
         :src="orderedSources[0].href"
@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import { Image } from '@/models/ImageModel'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { Image, ImageSource } from '@/models/ImageModel'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   image: Image
@@ -21,12 +21,22 @@ const props = defineProps<{
 
 const currentSize = ref<string>('200px')
 const container = ref(null)
-const orderedSources = Object.values(props.image.imageSources).sort(
-  (a, b) => a.width - b.width
+const imageSources = ref<string | undefined>(undefined)
+const orderedSources = ref<ImageSource[] | undefined>(undefined)
+watch(
+  () => props.image,
+  () => {
+    imageSources.value = undefined
+    orderedSources.value = undefined
+    orderedSources.value = Object.values(props.image.imageSources).sort(
+      (a, b) => a.width - b.width
+    )
+    imageSources.value = orderedSources.value.reduce((src, image) => {
+      return `${src}${image.href} ${image.width}w, `
+    }, '')
+  },
+  { immediate: true }
 )
-const imageSources = orderedSources.reduce((src, image) => {
-  return `${src}${image.href} ${image.width}w, `
-}, '')
 
 const updateSize = (width: number) => {
   currentSize.value = `${width}px`

@@ -17,16 +17,18 @@
         multiple
       />
       <div class="uploads-wrapper">
-        <div v-for="file in uploadImages.reverse()" :key="file.name">
-          <ImageUpload :file="file" :service="imageService" />
-        </div>
+        <ImageUpload
+          v-for="fileToUpload in uploadImages"
+          :file="fileToUpload"
+          :service="imageService"
+        />
       </div>
       <div v-if="images === undefined">Loading images...</div>
       <div v-else-if="images">
         <h3>Gallery</h3>
         <div class="images">
           <PictureComponent
-            v-for="i in images.images"
+            v-for="i in orderedImages"
             :image="i"
             class="picture"
           />
@@ -41,7 +43,7 @@
 import PictureComponent from '@/components/PictureComponent.vue'
 import { useRoute } from 'vue-router'
 import { useEventService } from '@/services/eventService'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useImageService } from '@/services/imageService'
 import ImageUpload from '@/components/ImageUpload.vue'
 
@@ -59,6 +61,12 @@ const event = eventService.getEventById(
 
 const imageService = useImageService(event)
 const images = imageService.getImages()
+const orderedImages = computed(() => {
+  if (!images.value) {
+    return []
+  }
+  return Object.values(images.value.images).sort((a, b) => b.id - a.id)
+})
 
 const uploadImages = ref<File[]>([])
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -66,7 +74,8 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const fileChange = (event: Event): void => {
   const input = event.target as HTMLInputElement
   if (input.files) {
-    uploadImages.value.push(...Array.from(input.files))
+    uploadImages.value = Array.from(input.files)
+    input.value = ''
   }
 }
 </script>

@@ -62,9 +62,17 @@ const updateDescription = (): void => {
   }
 }
 
-onMounted(async () => {
-  upload()
-})
+watch(
+  () => props.file,
+  async () => {
+    description.value = ''
+    progress.value = 0
+    image.value = undefined
+    console.log('Uploading image...')
+    upload()
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>

@@ -4,12 +4,16 @@ import { rootPath } from '../meta.js'
 import path from 'path'
 
 let ORM!: Sequelize
-switch (process.env.DB_DIALECT) {
+
+switch (process.env.DB_DIALECT?.toLowerCase()) {
+  default:
+    console.warn('No database dialect set. Using SQLite.')
   case 'sqlite':
     const sqlitePath: string = process.env.DB_FILE
       ? path.resolve(process.env.DB_FILE)
       : path.join(rootPath, 'var', 'db', 'db.sqlite')
-    fs.mkdirSync(sqlitePath, { recursive: true })
+    console.log(`Using SQLite database at ${sqlitePath}`)
+    fs.mkdirSync(path.dirname(sqlitePath), { recursive: true })
     ORM = new Sequelize({
       dialect: 'sqlite',
       storage: sqlitePath,
