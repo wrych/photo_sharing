@@ -4,38 +4,23 @@
     <div v-else-if="event">
       <h2>{{ event.title }}</h2>
       <h3>Upload your Pictures</h3>
-      <form @submit.prevent="upload">
-        <input
-          id="file"
-          @change="fileChange"
-          ref="fileInput"
-          name="file"
-          type="file"
-          :disabled="uploading"
-          accept=".png, .jpeg, .jpg, .webp"
-          required
-          autofocus
-          multiple
-        />
-        <div v-if="uploads" class="uploads-wrapper">
-          <div v-for="fileWithDescription of uploads" class="preview">
-            <div
-              class="overlay"
-              :style="`width: ${100 - fileWithDescription.progress}%; display: ${uploading ? 'block' : 'none'};`"
-            />
-            <div class="preview-image-container">
-              <img :src="getObject(fileWithDescription.file)" />
-            </div>
-            <input
-              v-model="fileWithDescription.description"
-              type="text"
-              placeholder="Description"
-              :disabled="uploading"
-            />
-          </div>
-          <button v-if="!uploading" type="submit">Upload</button>
+      <input
+        id="file"
+        @change="fileChange"
+        ref="fileInput"
+        name="file"
+        type="file"
+        accept="image/png, image/jpeg, image/webp, image/gif"
+        title="images"
+        required
+        autofocus
+        multiple
+      />
+      <div class="uploads-wrapper">
+        <div v-for="file in uploadImages.reverse()" :key="file.name">
+          <ImageUpload :file="file" :service="imageService" />
         </div>
-      </form>
+      </div>
       <div v-if="images === undefined">Loading images...</div>
       <div v-else-if="images">
         <h3>Gallery</h3>
@@ -58,6 +43,7 @@ import { useRoute } from 'vue-router'
 import { useEventService } from '@/services/eventService'
 import { ref } from 'vue'
 import { useImageService } from '@/services/imageService'
+import ImageUpload from '@/components/ImageUpload.vue'
 
 const route = useRoute()
 const eventService = useEventService()
@@ -74,61 +60,14 @@ const event = eventService.getEventById(
 const imageService = useImageService(event)
 const images = imageService.getImages()
 
-const getObject = (file: File): string => {
-  return URL.createObjectURL(file)
-}
-
-interface FileWithDescription {
-  file: File
-  description: string
-  progress: number
-}
-const uploads = ref<FileWithDescription[] | null>(null)
-const uploading = ref<boolean>(false)
+const uploadImages = ref<File[]>([])
 const fileInput = ref<HTMLInputElement | null>(null)
 
 const fileChange = (event: Event): void => {
   const input = event.target as HTMLInputElement
   if (input.files) {
-    if (!uploads.value) {
-      uploads.value = []
-    }
-    const files: FileWithDescription[] = []
-    Array.from(input.files).forEach((file) => {
-      if (!uploads.value?.find((f) => f.file.name === file.name)) {
-        files.push({ file: file, description: '', progress: 0 })
-      }
-    })
-    uploads.value = files
+    uploadImages.value.push(...Array.from(input.files))
   }
-}
-
-const upload = async (): Promise<void> => {
-  if (!uploads.value || !event.value) {
-    console.warn('No file or event')
-    return
-  }
-  uploading.value = true
-  const uploadPromises: Promise<void>[] = []
-  for (const fileWithDescription of uploads.value) {
-    uploadPromises.push(
-      imageService.uploadImage(
-        fileWithDescription.file,
-        fileWithDescription.description,
-        (e) => {
-          if (e.progress) {
-            fileWithDescription.progress = Math.round(e.progress * 100)
-          }
-        }
-      )
-    )
-  }
-  await Promise.all(uploadPromises)
-  uploads.value = null
-  if (fileInput.value) {
-    fileInput.value.value = ''
-  }
-  uploading.value = false
 }
 </script>
 
@@ -157,22 +96,6 @@ input::file-selector-button:hover {
   border-color: var(--color-highlight);
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background-color: var(--color-background-soft);
-  color: var(--color-title);
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: var(--color-background-mute);
-  color: var(--color-highlight);
-  border-color: var(--color-highlight);
-}
-
 .event-container {
   max-width: 1024px;
   margin: 0 auto;
@@ -187,57 +110,6 @@ button:hover {
 
 .picture {
   height: 200px;
-}
-
-.preview {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  width: 100%;
-  padding: 10px;
-  background-color: var(--color-background-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 5px;
-  margin: 10px 0;
-}
-
-.preview span {
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
-
-.preview-image-container {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.preview-image-container img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.preview input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background-color: var(--color-background-mute);
-  color: var(--color-title);
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-highlight);
-  opacity: 0.3;
-  z-index: 1;
 }
 
 .images {

@@ -1,4 +1,4 @@
-import { ref, watch, type Ref } from 'vue'
+import { ref, toRef, watch, type Ref } from 'vue'
 
 import * as imageApi from '@/apis/imageApi'
 import { Image, Images } from '@/models/ImageModel'
@@ -19,12 +19,20 @@ export class ImageRepository {
     return this.images
   }
 
-  updateImage = (image: Image) => {
+  updateImage = (image: Image): Ref<Image> => {
     if (this.images.value) {
       this.images.value.images[image.id] = image
     }
     this.updateImages()
-    return this.images
+    return toRef(this.images.value!.images, image.id)
+  }
+
+  updateDescription = (image: Image): Ref<Image> => {
+    if (this.images.value) {
+      this.images.value.images[image.id].description = image.description
+    }
+    this.updateImages()
+    return toRef(this.images.value!.images, image.id)
   }
 
   getImages = (): Ref<Images | undefined> => {

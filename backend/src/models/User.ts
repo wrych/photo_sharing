@@ -5,7 +5,6 @@ interface UserAttributes {
   id?: number
   username: string
   hashedPassword: string
-  salt: string
   name?: string
   email?: string
   emailVerified?: number
@@ -15,7 +14,6 @@ class User extends Model<UserAttributes> implements UserAttributes {
   declare id: number
   declare username: string
   declare hashedPassword: string
-  declare salt: string
   declare name: string
   declare email: string
   declare emailVerified: number
@@ -36,9 +34,6 @@ User.init(
     hashedPassword: {
       type: DataTypes.TEXT,
       allowNull: false
-    },
-    salt: {
-      type: DataTypes.TEXT
     },
     name: {
       type: DataTypes.TEXT

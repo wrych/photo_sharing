@@ -1,5 +1,5 @@
-import argon2 from 'argon2'
-import User from '../models/User.js'
+import bcrypt from 'bcrypt'
+import User from '../models/User'
 
 const incorrectUsernameOrPasswordMessage = 'Incorrect username or password'
 
@@ -13,7 +13,11 @@ const verifyPassword = async (
   ) => void
 ) => {
   try {
-    const isPasswordCorrect = await argon2.verify(user.hashedPassword, password)
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      user.hashedPassword
+    )
+    console.log('isPasswordCorrect', isPasswordCorrect)
     if (!isPasswordCorrect) {
       return cb(null, false, {
         message: incorrectUsernameOrPasswordMessage
@@ -39,14 +43,17 @@ const verifyUserAndPassword = async (
   })
 
   if (!user) {
-    return cb(null, false, { message: incorrectUsernameOrPasswordMessage })
+    return await cb(null, false, {
+      message: incorrectUsernameOrPasswordMessage
+    })
   }
 
   return await verifyPassword(user, password, cb)
 }
 
 const hashPassword = async (password: string): Promise<string> => {
-  return await argon2.hash(password)
+  const saltRounds = 10
+  return await bcrypt.hash(password, saltRounds)
 }
 
 export { verifyUserAndPassword, verifyPassword, hashPassword }

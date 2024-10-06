@@ -15,6 +15,7 @@ import ORM from './data/ORM.js'
 import syncDatabase, { runInitialSetup } from './initialSetup.js'
 import { rootPath } from './meta.js'
 import path from 'path'
+import { setupPassport } from './services/passport.js'
 
 dotenv.config()
 
@@ -30,9 +31,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 const SequelizeStore = connectSessionSequelize(session.Store)
+
+const sessionSecret = process.env.SESSION_SECRET
+if (!sessionSecret) {
+  throw new Error('Please set SESSION_SECRET in your .env file')
+}
+
 app.use(
   session({
-    secret: 'keyboard cat',
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     store: new SequelizeStore({
@@ -42,7 +49,7 @@ app.use(
     })
   })
 )
-app.use(passport.authenticate('session'))
+setupPassport(app)
 
 app.use(express.static(path.join(rootPath, 'public')))
 app.use(express.static(path.join(rootPath, 'app')))
@@ -68,7 +75,7 @@ app.use((err: HttpError, req: Request, res: Response) => {
 
 const startServer = async () => {
   await syncDatabase()
-  await runInitialSetup('development')
+  await runInitialSetup(app.get('env'))
 }
 startServer()
 

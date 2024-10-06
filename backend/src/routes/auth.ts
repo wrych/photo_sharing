@@ -1,43 +1,6 @@
 import express from 'express'
 import passport from 'passport'
-import { Strategy } from 'passport-local'
-import User from '../models/User.js'
-import { verifyUserAndPassword } from '../services/auth.js'
 import { registerUser } from '../services/user.js'
-
-passport.use(
-  new Strategy(
-    async (
-      username: string,
-      password: string,
-      cb: (
-        err: Error | null,
-        user?: User | false,
-        info?: { message: string }
-      ) => void
-    ) => {
-      console.log('verifying user...')
-      try {
-        return await verifyUserAndPassword(username, password, cb)
-      } catch (err: any) {
-        return cb(err)
-      }
-    }
-  )
-)
-
-passport.serializeUser((user, cb) => {
-  cb(null, (user as User).id)
-})
-
-passport.deserializeUser(async (id: string, cb) => {
-  try {
-    const user = await User.findByPk(id)
-    cb(null, user)
-  } catch (err) {
-    cb(err, null)
-  }
-})
 
 const router = express.Router()
 

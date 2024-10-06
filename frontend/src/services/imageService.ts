@@ -6,9 +6,9 @@ import {
   useImageRepository,
   ImageRepository
 } from '@/repositories/imageRepository'
-import type { Images } from '@/models/ImageModel'
+import type { Image, Images } from '@/models/ImageModel'
 
-class ImageService {
+export class ImageService {
   event = ref<Event | undefined>(undefined)
   private repository!: ImageRepository
   images = ref<Images | undefined>(undefined)
@@ -30,16 +30,19 @@ class ImageService {
     file: File,
     description: string,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => void
-  ): Promise<void> => {
-    if (this.event.value) {
-      const image = await imageApi.upload(
-        file,
-        description,
-        this.event.value,
-        onUploadProgress
-      )
-      this.repository.updateImage(image)
-    }
+  ): Promise<Ref<Image>> => {
+    const image = await imageApi.upload(
+      file,
+      description,
+      this.event.value!,
+      onUploadProgress
+    )
+    return this.repository.updateImage(image)
+  }
+
+  updateDescription = async (image: Image): Promise<Ref<Image>> => {
+    const updatedImage = await imageApi.updateDescription(image)
+    return this.repository.updateDescription(updatedImage)
   }
 }
 

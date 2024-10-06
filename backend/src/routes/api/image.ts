@@ -34,6 +34,16 @@ imageRouter.get('/:id', async (req, res) => {
   })
 })
 
+imageRouter.post('/:id/description', async (req, res) => {
+  const image = await imageService.updateDescription(
+    parseInt(req.params.id),
+    req.body.value
+  )
+  res.status(200).send({
+    value: image
+  })
+})
+
 imagesRouter.get('/', async (req, res) => {
   if (!req.query.event_id) {
     res.status(400).send({ message: 'Event ID is required!' })

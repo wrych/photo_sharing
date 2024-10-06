@@ -1,6 +1,6 @@
 import { Event } from '@/models/EventModel'
-import axios, { type AxiosProgressEvent } from 'axios'
-import { getJson, postForm } from './common'
+import { type AxiosProgressEvent } from 'axios'
+import { getJson, postForm, postJson } from './common'
 import {
   Image,
   Images,
@@ -8,7 +8,7 @@ import {
   type ImagesDTO
 } from '@/models/ImageModel'
 
-const upload = async (
+export const upload = async (
   file: File,
   description: string,
   event: Event,
@@ -27,14 +27,20 @@ const upload = async (
   )
 }
 
-const getImageById = async (id: number): Promise<Image> => {
+export const updateDescription = async (image: Image): Promise<Image> => {
+  return Image.fromJSON(
+    (await postJson(`/api/image/${image.id}/description`, {
+      value: image.description
+    })) as ImageDTO
+  )
+}
+
+export const getImageById = async (id: number): Promise<Image> => {
   return Image.fromJSON((await getJson(`/api/images/${id}`)) as ImageDTO)
 }
 
-const getImagesByEvent = async (event: Event): Promise<Images> => {
+export const getImagesByEvent = async (event: Event): Promise<Images> => {
   return Images.fromJSON(
     (await getJson(`/api/images/?event_id=${event.id}`)) as ImagesDTO
   )
 }
-
-export { upload, getImageById, getImagesByEvent }

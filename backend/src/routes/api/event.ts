@@ -15,12 +15,16 @@ eventRouter.get('/', ensureAuthenticated, async (req, res) => {
   })
 })
 
-eventRouter.post('/new', ensureAuthenticated, async (req : Request, res: Response) => {
-  const newEvent = await eventService.create(req.user as User, req.body.title)
-  res.status(201).json({
-    value: newEvent
-  })
-})
+eventRouter.post(
+  '/new',
+  ensureAuthenticated,
+  async (req: Request, res: Response) => {
+    const newEvent = await eventService.create(req.user as User, req.body.title)
+    res.status(201).json({
+      value: newEvent
+    })
+  }
+)
 
 eventRouter.get('/states', async (req, res) => {
   const eventStates = await eventStateService.getAll()
@@ -29,15 +33,18 @@ eventRouter.get('/states', async (req, res) => {
   })
 })
 
-eventRouter.get('/:id', ensureAuthenticated, async (req, res) => {
-  const event = await eventService.getById(req.user as User, parseInt(req.params.id))
+eventRouter.get('/:id', async (req, res) => {
+  const event = await eventService.getById(parseInt(req.params.id))
   res.status(200).json({
     value: event
   })
 })
 
 eventRouter.delete('/:id', ensureAuthenticated, async (req, res) => {
-  const event = await eventService.deleteById(req.user as User, parseInt(req.params.id))
+  const event = await eventService.deleteById(
+    req.user as User,
+    parseInt(req.params.id)
+  )
   res.status(200).json({
     value: 'deleted'
   })

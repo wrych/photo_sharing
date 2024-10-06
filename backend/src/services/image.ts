@@ -40,9 +40,8 @@ const toImageDTO = (image: Image): ImageDTO | null => {
   return null
 }
 
-const getImageById = async (id: number): Promise<ImageDTO | null> => {
-  const image = await Image.findOne({
-    where: { id: id },
+const getImageWithSourcesById = async (id: number): Promise<Image | null> => {
+  const image = (await Image.findByPk(id, {
     include: [
       {
         model: ImageSource,
@@ -50,14 +49,32 @@ const getImageById = async (id: number): Promise<ImageDTO | null> => {
         attributes: ['id', 'width', 'height', 'format', 'size', 'is_original']
       }
     ]
-  })
+  })) as ImageWithSource
+  return image
+}
+
+export const updateDescription = async (
+  id: number,
+  description: string
+): Promise<ImageDTO | null> => {
+  const image = await getImageWithSourcesById(id)
+  if (!image) {
+    return null
+  }
+  image.description = description
+  await image.save()
+  return toImageDTO(image)
+}
+
+export const getImageById = async (id: number): Promise<ImageDTO | null> => {
+  const image = await getImageWithSourcesById(id)
   if (!image) {
     return null
   }
   return toImageDTO(image)
 }
 
-const getImagesByEventId = async (id: number) => {
+export const getImagesByEventId = async (id: number) => {
   const images = await Image.findAll({
     where: { event_id: id },
     include: [
@@ -71,7 +88,7 @@ const getImagesByEventId = async (id: number) => {
   return images.map((image) => ({ value: toImageDTO(image) }))
 }
 
-const storeImage = async (
+export const storeImage = async (
   buffer: Buffer,
   eventId: number,
   description: string
@@ -100,7 +117,7 @@ const storeImage = async (
   }
 }
 
-const saveImageSource = async (
+export const saveImageSource = async (
   image: Sharp,
   dbImage: Image,
   options?: {
@@ -119,7 +136,7 @@ const saveImageSource = async (
   await createImageSource(dbImage, filePath, outputInfo, options)
 }
 
-const saveImageToFile = async (
+export const saveImageToFile = async (
   image: sharp.Sharp,
   options:
     | { width?: number; format?: keyof FormatEnum; isOriginal?: boolean }
@@ -133,7 +150,7 @@ const saveImageToFile = async (
     .toFile(filePath)
 }
 
-const createImageSource = async (
+export const createImageSource = async (
   dbImage: Image,
   filePath: string,
   outputInfo: sharp.OutputInfo,
@@ -153,8 +170,8 @@ const createImageSource = async (
   })
 }
 
-const getImageSourceById = async (id: number): Promise<ImageSource | null> => {
+export const getImageSourceById = async (
+  id: number
+): Promise<ImageSource | null> => {
   return await ImageSource.findOne({ where: { id: id } })
 }
-
-export { storeImage, getImageById, getImageSourceById, getImagesByEventId }
