@@ -4,10 +4,24 @@ import NavigationComponent from './components/NavigationComponent.vue'
 </script>
 
 <template>
-  <header v-if="!$route.path.startsWith('/event/')">
-    <NavigationComponent />
-  </header>
-  <RouterView />
+  <div class="app">
+    <header v-if="!$route.path.startsWith('/event/')">
+      <NavigationComponent />
+    </header>
+    <main class="main">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  height: 100%;
+}
+</style>

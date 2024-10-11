@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('../views/EventView.vue')
     },
     {
+      path: '/event/:id/zoom/:imageId',
+      name: 'Image View',
+      component: () => import('../views/EventView.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFound.vue')

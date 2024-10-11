@@ -1,25 +1,20 @@
 <template>
   <div class="preview">
-    <div
-      class="overlay"
-      :style="`width: ${progress}%; display: ${uploading ? 'block' : 'none'};`"
-    />
+    <div class="overlay" :style="`width: ${progress}%; display: ${uploading ? 'block' : 'none'};`" />
     <div class="preview-image-container">
       <img :src="getObject(props.file)" />
     </div>
-    <input
-      v-model="description"
-      type="text"
-      placeholder="Description"
-      @change="updateDescription"
-    />
+    <input v-model="description" type="text" placeholder="Description" @change="updateDescription" />
+    <div class="close">
+      <input type="button" value="X" @click="close" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Image } from '@/models/ImageModel'
 import { ImageService } from '@/services/imageService'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   file: { type: File, required: true },
@@ -34,7 +29,7 @@ const progress = ref<number>(0)
 const uploading = ref<boolean>(false)
 const description = ref<string>('')
 const image = ref<Image | undefined>(undefined)
-
+const emit = defineEmits(['close'])
 const upload = async (): Promise<void> => {
   uploading.value = true
   image.value = (
@@ -62,6 +57,10 @@ const updateDescription = (): void => {
   }
 }
 
+const close = () => {
+  emit('close')
+}
+
 watch(
   () => props.file,
   async () => {
@@ -79,7 +78,8 @@ watch(
 .preview {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
   width: 100%;
   padding: 10px;
   background-color: var(--color-background-soft);
@@ -96,6 +96,7 @@ watch(
 .preview-image-container {
   width: 100%;
   aspect-ratio: 3 / 2;
+  max-width: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,5 +124,14 @@ watch(
   width: 0%;
   height: 5%;
   background-color: var(--color-highlight);
+}
+
+.close input {
+  cursor: pointer;
+}
+
+.close input:hover {
+  color: var(--color-highlight);
+  border-color: var(--color-highlight);
 }
 </style>
