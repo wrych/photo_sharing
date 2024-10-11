@@ -106,7 +106,8 @@ h3 {
 
 .upload-button div {
   font-size: 4rem;
-  line-height: 40px;
+  font-weight: bold;
+  line-height: 39px;
   text-align: center;
   color: var(--color-text);
 }
